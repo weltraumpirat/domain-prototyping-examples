@@ -5,7 +5,6 @@ import {
 } from './shopping-cart'
 import {
   DomainCommand,
-  DomainEvent,
   DomainMessage
 } from '../components/messages'
 import {

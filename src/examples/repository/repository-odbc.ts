@@ -1,3 +1,5 @@
+// noinspection SqlNoDataSourceInspection
+
 import odbc, { Connection, Statement } from 'odbc'
 import {OrderRepository} from '../../domain/shopping-cart'
 import {
@@ -66,11 +68,12 @@ async function prepareStatements(connection: Connection): Promise<Statements> {
     findAll:        await prepare('SELECT payload FROM orders'),
     removeOne:      await prepare('DELETE FROM orders WHERE id = ?'),
     insertOne:      await prepare('INSERT INTO orders (id, customer_id, payload) VALUES (?, ?, ?)'),
-    removeBatch:    await prepare(`DELETE FROM orders WHERE id IN (\${idPlaceholders})`),
-    insertBatch:    await prepare(`INSERT INTO orders (id, customer_id, payload) VALUES \${rowPlaceholders}`),
+    removeBatch:    await prepare(`DELETE FROM orders WHERE id IN (${idPlaceholders})`),
+    insertBatch:    await prepare(`INSERT INTO orders (id, customer_id, payload) VALUES ${rowPlaceholders}`),
   }
 }
 
+// noinspection JSUnusedGlobalSymbols
 class OrderRepositoryOdbc implements OrderRepository {
   private constructor(
     private readonly _connection: Connection,

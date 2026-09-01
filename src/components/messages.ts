@@ -36,5 +36,7 @@ class TestedEvent extends DomainEvent<'TESTED'> {
   readonly type = 'TESTED' as const
 }
 
+// noinspection JSUnusedLocalSymbols
 const cmd = new TestCommand()
+// noinspection JSUnusedLocalSymbols
 const evt = new TestedEvent()
