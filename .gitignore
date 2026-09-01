@@ -8,4 +8,5 @@ node_modules
 cdk.out
 
 # intellij
-!/domain-prototyping-examples.iml
+.idea
+*.iml
