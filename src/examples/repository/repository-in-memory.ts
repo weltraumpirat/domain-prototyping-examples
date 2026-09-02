@@ -1,9 +1,11 @@
-import {OrderRepository} from '../../domain/shopping-cart'
 import {
-  Order,
   UUID
 } from '../../domain/types'
+import {OrderRepository} from '../../domain/orders/repository'
+import {Order} from '../../domain/orders/types'
 
+
+// noinspection JSUnusedGlobalSymbols
 export class OrderRepositoryInMemory implements OrderRepository {
   private _orders: Map<UUID, Order> = new Map<UUID, Order>()
 

@@ -7,6 +7,7 @@ import { IQueue } from 'aws-cdk-lib/aws-sqs'
 import { Construct } from 'constructs'
 
 // The bus and the Inventory context's command queue already exist elsewhere.
+// noinspection JSUnusedGlobalSymbols
 export function wireInventoryPolicyHandler(
     scope: Construct,
     bus: IEventBus,

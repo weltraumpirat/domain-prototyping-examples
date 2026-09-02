@@ -26,7 +26,7 @@ export class MessageQueueInMemory implements MessageQueue<DomainMessage> {
         await handler(msg)
       } catch (err) {
         console.error(err)
-        // If an error is thrown, we put the message back in the queue,
+        // If an error is thrown, we put the message back in the queue
         // so that it's next in line when we try again
         this._messages.push(msg)
       }

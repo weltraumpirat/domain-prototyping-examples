@@ -13,6 +13,7 @@ import {
 import { Construct } from 'constructs'
 
 // The bus and the table exist elsewhere in the infrastructure.
+// noinspection JSUnusedGlobalSymbols
 export function wireAccountCommandQueue(
     scope: Construct,
     bus: IEventBus,
@@ -71,7 +72,7 @@ export function wireAccountCommandQueue(
     reportBatchItemFailures: true
   }))
 
-  // The handler publishes its result events, and reads and writes the account
+  // The handler publishes its result events and reads and writes the account
   // it changes
   bus.grantPutEventsTo(accountCommandHandlers)
   table.grantReadWriteData(accountCommandHandlers)

@@ -4,11 +4,12 @@ import {
   CommandQueueSQS,
   SQSConfiguration
 } from '../../components/message-queue-sqs'
-import {WithdrawFundsCommand} from '../../domain/account'
+
+import {WithdrawFundsCommand} from '../../domain/account/commands'
 
 
 // Environment variable of the lambda, set by CDK.
-// This will resolve at runtime.
+// Will resolve at runtime.
 const queueUrl = process.env.QUEUE_URL!
 
 const sqs = new SQSClient({})

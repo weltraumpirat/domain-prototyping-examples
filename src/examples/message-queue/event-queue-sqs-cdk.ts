@@ -8,6 +8,7 @@ import { IQueue, Queue } from 'aws-cdk-lib/aws-sqs'
 import { Construct } from 'constructs'
 
 // The bus and target command queues already exist elsewhere.
+// noinspection JSUnusedGlobalSymbols
 export function wireBonusPointsPolicy(
     scope: Construct,
     bus: IEventBus,

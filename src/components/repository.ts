@@ -8,5 +8,5 @@ export interface Repository<T> {
   save(item: T): Promise<void>
   saveAll(items: T[]): Promise<void>
   remove(id: UUID): Promise<void>
-  removeAll(ids: UUID[]): Promise<void>
+  removeAll(ids?: UUID[]): Promise<void>
 }

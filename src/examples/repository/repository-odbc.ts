@@ -1,11 +1,12 @@
 // noinspection SqlNoDataSourceInspection
 
 import odbc, { Connection, Statement } from 'odbc'
-import {OrderRepository} from '../../domain/shopping-cart'
 import {
-  Order,
   UUID
 } from '../../domain/types'
+
+import {Order} from '../../domain/orders/types'
+import {OrderRepository} from '../../domain/orders/repository'
 // This example uses IBM's node-odbc package, with prepared statements throughout.
 //
 // Example schema (works on any ANSI-SQL database reachable over ODBC):
@@ -23,7 +24,7 @@ import {
 // business information in specifically typed fields.
 //
 // Exact type names vary by vendor (TEXT / CLOB / VARCHAR(MAX)); CHAR(36) holds
-// a UUID string. Avoid vendor-specific types (e.g. PostgreSQL's UUID / JSONB)
+// a UUID string. Avoid vendor-specific types (e.g., PostgreSQL's UUID / JSONB)
 // so the same DDL works against PostgreSQL, SQL Server, Oracle, DB2, ...
 //
 // Prepared statements are connection-scoped in ODBC, so this repository owns a
@@ -38,7 +39,7 @@ import {
 // no ON CONFLICT (PostgreSQL), no MERGE (SQL Server / Oracle). For batch
 // operations we prepare a multi-row INSERT and a multi-row DELETE at a fixed
 // MAX_BATCH_SIZE; saveAll splits its input into full batches of that size
-// plus a single-row tail. This keeps every SQL string fixed at prepare time —
+// plus a single-row tail. This keeps every SQL string fixed at prepare-time —
 // no per-call concatenation, no values ever flowing into the SQL.
 
 
@@ -115,7 +116,7 @@ class OrderRepositoryOdbc implements OrderRepository {
 
   async save(item: Order): Promise<void> {
     // DELETE-then-INSERT keeps semantics uniform with saveAll: always succeeds
-    // whether or not the row already exists, no need for a separate UPDATE path.
+    // whether the row already exists, no need for a separate UPDATE path.
     // Wrapped in a transaction so the DELETE and INSERT are atomic — a crash
     // between them can't leave the row deleted but not re-inserted.
     await this._connection.beginTransaction()
@@ -136,7 +137,7 @@ class OrderRepositoryOdbc implements OrderRepository {
     // statements have a fixed placeholder count, so full chunks go through them;
     // the tail (< MAX_BATCH_SIZE) drains via the single-row prepared statements.
     // No SQL is ever built at call time — every placeholder count is baked into
-    // the statement at prepare time. Wrapped in a transaction so a partial
+    // the statement at prepare-time. Wrapped in a transaction so a partial
     // failure rolls everything back.
     await this._connection.beginTransaction()
     try {

@@ -2,11 +2,11 @@
 // Inject appropriate implementations.
 import {EventbusInMemory} from '../../components/eventbus-in-memory'
 import {Eventbus} from '../../components/eventbus'
-import {
-  ShoppingCartCommandHandlersEventbus,
-  ShoppingCartRepository
-} from '../../domain/shopping-cart'
-import {OrderPolicy} from '../../domain/notification'
+
+import {NotificationPolicy} from '../../domain/notifications/policies'
+
+import {ShoppingCartRepository} from '../../domain/shopping-cart/repository'
+import {ShoppingCartCommandHandlersEventbus} from '../../domain/shopping-cart/command-handlers'
 
 declare const repository: ShoppingCartRepository
 const eventbus: Eventbus = new EventbusInMemory()
@@ -18,4 +18,4 @@ eventbus.subscribe('*', async (event) => {
 
 // Handlers are subscribed in the constructor
 new ShoppingCartCommandHandlersEventbus(repository, eventbus)
-new OrderPolicy(eventbus)
+new NotificationPolicy(eventbus)

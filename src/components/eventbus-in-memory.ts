@@ -12,7 +12,7 @@ export class EventbusInMemory extends BaseEventbus {
       ...(this._handlers.get('*') ?? []),
     ]
     // Fan out in parallel — handlers are independent. If one needs
-    // ordering it should subscribe a single handler that drives its
+    // ordering, it should subscribe a single handler that drives its
     // own queue.
     await Promise.all(handlers.map((h) => h(msg as T)))
   }

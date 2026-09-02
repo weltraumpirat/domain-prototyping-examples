@@ -6,23 +6,24 @@
 import {
   Address,
   Amount,
-  Currency,
-  Order,
+  Money,
   Timestamp,
   UUID
 } from '../../domain/types'
-import {OrderRepository} from '../../domain/shopping-cart'
 import {
   dynamoDBBatchDelete,
   dynamoDBBatchWrite,
   dynamoDBQuery,
   dynamoDBScan
 } from '../../components/dynamodb'
+import {Order} from '../../domain/orders/types'
+import {OrderRepository} from '../../domain/orders/repository'
+
 
 type DDBOrderRow    = { PK: string, SK: string, customerId: UUID }
 type OrderHeaderRow = DDBOrderRow & { id: UUID }
-type MetadataRow    = DDBOrderRow & { timestamp: Timestamp, totalValue: Currency, invoiceAddress?: Address, deliveryAddress: Address }
-type ItemRow        = DDBOrderRow & { id: UUID, productId: UUID, quantity: Amount, pricePerUnit: Currency }
+type MetadataRow    = DDBOrderRow & { timestamp: Timestamp, totalValue: Money, invoiceAddress?: Address, deliveryAddress: Address }
+type ItemRow        = DDBOrderRow & { id: UUID, productId: UUID, quantity: Amount, pricePerUnit: Money }
 type OrderRow       = OrderHeaderRow | MetadataRow | ItemRow
 
 function toOrderRows(order: Order): OrderRow[] {
@@ -60,6 +61,7 @@ function groupAndReconstruct(rows: OrderRow[]): Order[] {
   return Array.from(byPK.values()).map(fromOrderRows)
 }
 
+// noinspection JSUnusedGlobalSymbols
 export class OrderRepositoryDynamoDB implements OrderRepository {
 
   async findAllByCustomerId(customerId: UUID): Promise<Order[]> {

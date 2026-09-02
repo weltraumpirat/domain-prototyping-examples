@@ -9,6 +9,7 @@ import { Construct } from 'constructs'
 
 // The bus and the table already exist elsewhere in the infrastructure. Here
 // we only add the command side, and the permissions our handler Lambda needs.
+// noinspection JSUnusedGlobalSymbols
 export function wireShoppingCartCommandHandler(
   scope: Construct,
   bus: IEventBus,
@@ -51,7 +52,7 @@ export function wireShoppingCartCommandHandler(
     reportBatchItemFailures: true
   }))
 
-  // The handler publishes its result events, and loads and stores the carts
+  // The handler publishes its result events and loads and stores the carts
   // it changes. Nothing else in the stack needs that access.
   bus.grantPutEventsTo(shoppingCartHandlers)
   table.grantReadWriteData(shoppingCartHandlers)

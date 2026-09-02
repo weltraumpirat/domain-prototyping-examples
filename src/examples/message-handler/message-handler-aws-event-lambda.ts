@@ -3,12 +3,12 @@ import {createEventBridgeLambdaHandler} from '../../components/lambda-handlers'
 import {EventbusEventBridge} from '../../components/eventbus-eventbridge'
 import {CommandQueue} from '../../components/message-queue'
 import {DomainEvent} from '../../components/messages'
-import {InventoryPolicy} from '../../domain/inventory'
+import {InventoryPolicy} from '../../domain/inventory/policies'
 import {
   ItemAddedToCartEvent,
   ItemRemovedFromCartEvent,
-  OrderPlacedEvent
-} from '../../domain/shopping-cart'
+  ShoppingCartCheckedOutEvent,
+} from '../../domain/shopping-cart/events'
 
 // Dependencies initialized with AWS-specific versions
 declare const commandQueue: CommandQueue
@@ -19,7 +19,7 @@ const inventoryPolicy = new InventoryPolicy(commandQueue)
 const policyHandler= inventoryPolicy.handle.bind(inventoryPolicy)
 eventbus.subscribe(ItemAddedToCartEvent, policyHandler)
 eventbus.subscribe(ItemRemovedFromCartEvent, policyHandler)
-eventbus.subscribe(OrderPlacedEvent, policyHandler)
+eventbus.subscribe(ShoppingCartCheckedOutEvent, policyHandler)
 
 // Lambda handler only does AWS specific tasks: Unwrap event, pass it on,
 // catch errors.

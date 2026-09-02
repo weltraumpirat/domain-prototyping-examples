@@ -6,11 +6,9 @@ import {
 import {
   WithdrawalPolicyHandlers
 } from './event-queue-in-memory'
-import {
-  CollectBonusPointsCommand,
-  SendEmailNotificationCommand
-} from '../../domain/account'
 import {createPolicySqsLambdaHandler} from '../../components/lambda-handlers'
+import {CollectBonusPointsCommand} from '../../domain/loyalty/commands'
+import {SendEmailNotificationCommand} from '../../domain/notifications/commands'
 
 // Not adding to this queue, so no SQS configuration
 const eventQueue = new EventQueueSQS()

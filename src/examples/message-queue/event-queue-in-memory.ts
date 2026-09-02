@@ -9,11 +9,11 @@ import {
 import {Eventbus} from '../../components/eventbus'
 import {DomainEvent} from '../../components/messages'
 import {
-  CollectBonusPointsCommand,
   FundsWithdrawnEvent,
-  SendEmailNotificationCommand,
   WithdrawalRejectedEvent
-} from '../../domain/account'
+} from '../../domain/account/events'
+import {CollectBonusPointsCommand} from '../../domain/loyalty/commands'
+import {SendEmailNotificationCommand} from '../../domain/notifications/commands'
 
 // ----- Infrastructure setup
 
@@ -81,4 +81,4 @@ const consumer = async () => {
   await eventQueue.consume(withdrawalPolicy.handle.bind(withdrawalPolicy))
   setTimeout(consumer, 100)
 }
-consumer()
+setTimeout(consumer, 100)

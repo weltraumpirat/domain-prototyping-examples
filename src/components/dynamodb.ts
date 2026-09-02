@@ -11,15 +11,7 @@ import {
 } from '@aws-sdk/lib-dynamodb'
 import { NativeAttributeValue } from '@aws-sdk/util-dynamodb'
 
-// lib-dynamodb doesn't export a named per-request type, so we declare the
-// document-client-correct shape locally: native JS values, not the marshalled
-// AttributeValue form the low-level client uses.
-type WriteRequest = {
-  PutRequest?: { Item: Record<string, NativeAttributeValue> }
-  DeleteRequest?: { Key: Record<string, NativeAttributeValue> }
-}
-
-const TABLE_NAME = process.env.TABLE_NAME! // Inject table name as environment variable, e.g. via CDK
+const TABLE_NAME = process.env.TABLE_NAME! // Inject the table name as an environment variable, e.g., via CDK
 const MAX_BATCH_SIZE = 25            // DynamoDB BatchWriteItem caps a request at 25 items.
 const MAX_RETRY_BACKOFF_MS = 1000    // Cap for exponential backoff between UnprocessedItems retries.
 
@@ -38,6 +30,14 @@ const documentClient = DynamoDBDocumentClient.from(client, {
     convertClassInstanceToMap: false
   }
 })
+
+// lib-dynamodb doesn't export a named per-request type, so we declare the
+// document-client-correct shape locally: native JS values, not the marshaled
+// AttributeValue form the low-level client uses.
+export type WriteRequest = {
+  PutRequest?: { Item: Record<string, NativeAttributeValue> }
+  DeleteRequest?: { Key: Record<string, NativeAttributeValue> }
+}
 
 export type QueryConditions = {
   KeyConditionExpression: string,
@@ -103,7 +103,7 @@ export const dynamoDBScan = async <T>(filterExpression?: string, expressionAttri
 // BatchWriteItem may return UnprocessedItems when DynamoDB couldn't process
 // the whole batch (typically due to per-partition throttling). The documented
 // remedy is to retry just the unprocessed slice with backoff until it's
-// empty. We don't return until every row was successfully saved.
+// empty. We don't return until every row is successfully saved.
 async function loopedWrite(requests: WriteRequest[]): Promise<void> {
   let pending = requests
   let attempt = 0

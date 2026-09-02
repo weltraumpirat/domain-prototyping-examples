@@ -18,7 +18,7 @@ npx cdk deploy
 
 There is no linter or formatter configured.
 
-## Module system — do not change casually
+## Module system — Do not change casually
 
 The repo is **CommonJS**, deliberately. `package.json` has no `"type"` field and
 tsconfig uses `module: "CommonJS"` / `moduleResolution: "node"`.

@@ -3,6 +3,7 @@ import * as targets from 'aws-cdk-lib/aws-events-targets'
 import * as lambda from 'aws-cdk-lib/aws-lambda'
 import {Construct} from 'constructs'
 
+// noinspection JSUnusedGlobalSymbols
 export function wireShoppingRules(
     scope: Construct,
     bus: events.IEventBus,

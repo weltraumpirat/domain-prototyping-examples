@@ -25,7 +25,7 @@ export const createCommandSqsLambdaHandler = (queue: CommandQueueSQS, handler: M
     async (event: SQSEvent): Promise<SQSBatchResponse> => {
       const records = event.Records
 
-      // Consuming a queue in batches can significantly speed up delivery, and
+      // Consuming a queue in batches can significantly speed up delivery and
       // reduce cost (AWS Lambda is billed per invocation).
       // To take advantage of this, we must prepare to
       // handle multiple incoming messages, not just one.
