@@ -6,7 +6,7 @@ import {
   UUID
 } from '../types'
 import {DomainCommand} from '../../components/messages'
-import {ShoppingCartContents} from '../shopping-cart/types'
+import {Order} from '../orders/types'
 
 export class SendEmailNotificationCommand extends DomainCommand<'SEND_EMAIL_NOTIFICATION'> {
   readonly id: UUID = randomUUID()
@@ -22,7 +22,7 @@ export class SendConfirmationEmailCommand extends DomainCommand<'SEND_CONFIRMATI
   static readonly type = 'SEND_CONFIRMATION_EMAIL' as const
   readonly type = SendConfirmationEmailCommand.type
 
-  constructor(readonly cart: ShoppingCartContents) {
+  constructor(readonly order: Order) {
     super()
   }
 }

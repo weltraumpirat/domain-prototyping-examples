@@ -4,21 +4,18 @@ import {
   DomainCommand,
   DomainMessage
 } from '../../components/messages'
-import {
-  UUID
-} from '../types'
+import {UUID} from '../types'
 import {randomUUID} from 'node:crypto'
-import {
-  SendConfirmationEmailCommand,
-} from './commands'
+import {SendConfirmationEmailCommand,} from './commands'
 import {NotificationPolicy} from './policies'
-import {ShoppingCartCheckedOutEvent} from '../shopping-cart/events'
+import {OrderPlacedEvent} from '../orders/events'
+import {Order} from '../orders/types'
+import {Timekeeper} from '../../components/timekeeper'
 
 describe('NotificationPolicy:', () => {
   let eventbus: Eventbus
   let result: DomainMessage
   const productId: UUID = randomUUID()
-  const cartId: UUID = randomUUID()
 
   beforeEach(() => {
     eventbus = new EventbusInMemory()
@@ -29,34 +26,52 @@ describe('NotificationPolicy:', () => {
   })
 
   describe('when a cart is checked out', () => {
-    beforeEach( (done) => {
+    const orderId: UUID = randomUUID()
+    const customerId: UUID = randomUUID()
+    const address: string = '123 Main St, CA 90210 Beverly Hills'
 
-      eventbus.subscribe(SendConfirmationEmailCommand, async()=>{
+    beforeEach((done) => {
+
+      eventbus.subscribe(SendConfirmationEmailCommand, async () => {
         done()
       })
-      eventbus.publish(new ShoppingCartCheckedOutEvent(cartId, [{
-        id: randomUUID(),
-        productId,
-        quantity: 1,
-        pricePerUnit: '10 EUR'
-      }], '10 EUR' ))
+      const order: Order = {
+        id: orderId,
+        customerId: customerId, items: [{
+          id: randomUUID(),
+          productId,
+          quantity: 1,
+          pricePerUnit: '10 EUR'
+        }], metadata: {
+          timestamp: Timekeeper.now(),
+          deliveryAddress: address,
+          invoiceAddress: address,
+          totalValue: '10 EUR'
+        },
+      }
+      eventbus.publish(new OrderPlacedEvent(order))
     })
 
     it('should send a notification email', () => {
       expect(result).toEqual({
         id: expect.any(String),
-        cart: {
-          cartId: expect.any(String),
+        order: {
+          id: orderId,
+          customerId: customerId,
           items: [
             {
               id: expect.any(String),
-              pricePerUnit: "10 EUR",
+              pricePerUnit: '10 EUR',
               productId,
               quantity: 1
             }
           ],
-          timestamp: expect.any(String),
-          total: "10 EUR"
+          metadata: {
+            timestamp: expect.any(String),
+            deliveryAddress: '123 Main St, CA 90210 Beverly Hills',
+            invoiceAddress: '123 Main St, CA 90210 Beverly Hills',
+            totalValue: '10 EUR'
+          },
         },
         type: SendConfirmationEmailCommand.type
       })
